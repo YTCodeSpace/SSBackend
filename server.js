@@ -20,10 +20,10 @@ app.listen(port, () => {
 });
 
 //Middlewares
-// const allowedOrigins = [
-//   "http://localhost:5173",
-//   "https://main.d1kpt9kcduvwie.amplifyapp.com",
-// ];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://main.d1kpt9kcduvwie.amplifyapp.com",
+];
 // app.use(
 //   cors({
 //     origin: allowedOrigins,
