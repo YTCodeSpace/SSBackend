@@ -20,18 +20,26 @@ app.listen(port, () => {
 });
 
 //Middlewares
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://main.d1kpt9kcduvwie.amplifyapp.com",
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://main.d1kpt9kcduvwie.amplifyapp.com",
+// ];
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     credentials: true, // Allow cookies to be sent
+//   })
+// );
+
+const corsOrigin = {
+  origin: allowedOrigins,
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOrigin));
+
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true, // Allow cookies to be sent
-  })
-);
 // app.use((req, res, next) => {
 //   const origin = req.headers.origin;
 //   if (allowedOrigins.includes(origin)) {
