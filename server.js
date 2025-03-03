@@ -35,6 +35,8 @@ const corsOrigin = {
   origin: allowedOrigins,
   credentials: true,
   optionSuccessStatus: 200,
+  sameSite: false,
+  secure: true,
 };
 app.use(cors(corsOrigin));
 
