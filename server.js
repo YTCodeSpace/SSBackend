@@ -20,6 +20,8 @@ app.listen(port, () => {
 });
 
 //Middlewares
+app.use(bodyParser.json());
+app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
   "https://main.d1kpt9kcduvwie.amplifyapp.com",
@@ -38,8 +40,6 @@ const corsOrigin = {
 };
 app.use(cors(corsOrigin));
 
-app.use(bodyParser.json());
-app.use(cookieParser());
 // app.use((req, res, next) => {
 //   const origin = req.headers.origin;
 //   if (allowedOrigins.includes(origin)) {
