@@ -21,25 +21,32 @@ app.listen(port, () => {
 
 //Middlewares
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(
   cors({
+    origin: "http://localhost:5173",
     credentials: true, // Allow cookies to be sent
   })
 );
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  console.log(token);
-  if (!token) return res.sendStatus(401);
+  const token = req.cookies.token;
+  if (!token) return res.status(403).json({ message: "Unauthorized" });
 
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403);
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: "Invalid token" });
     req.user = user;
     next();
   });
 };
 
-Routes;
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user.id, username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+};
+
 app.get("/data", authenticateToken, async (req, res) => {
   const client = new MongoClient(process.env.MONGO_URI_MACHINES);
   let con1;
@@ -84,24 +91,20 @@ app.post("/login", async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    const token = jwt.sign({ username: user.username }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
-    res.json({ token });
-    res.cookie("authToken", token, {
-      httpOnly: true, // Secure against XSS
-      secure: false, // Set to true in production with HTTPS
-      sameSite: "Strict", // Prevent CSRF
-      maxAge: 60 * 60 * 1000, // 1 hour
-    });
-    userName = username;
+    const token = generateToken(user);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    }); // Set `secure: true` in production with HTTPS
+    res.json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ error: "Error Logging in" });
   }
 });
 
 app.get("/protected", authenticateToken, (req, res) => {
-  res.json({ message: "Access granted" });
+  res.json({ message: "Access granted", user: req.user });
 });
 
 app.get("/home", (req, res) => {
