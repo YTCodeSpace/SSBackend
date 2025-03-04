@@ -16,7 +16,7 @@ const port = Number(process.env.PORT) || 3001;
 let userName;
 
 app.listen(port, () => {
-  console.log("connected to 3001");
+  console.log("connected to " + port);
 });
 
 //Middlewares
