@@ -12,7 +12,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 // connect to express app
 const app = express();
-const port = process.env.PORT || 3001;
+const port = Number(process.env.PORT) || 3001;
 let userName;
 
 app.listen(port, () => {
